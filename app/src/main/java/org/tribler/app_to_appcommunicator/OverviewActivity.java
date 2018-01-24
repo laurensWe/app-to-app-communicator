@@ -504,7 +504,7 @@ public class OverviewActivity extends AppCompatActivity {
      * @throws MessageException
      */
     private void handlePunctureRequest(Peer peer, PunctureRequest message) throws IOException, MessageException {
-        if (!peerExists(message.getPuncturePeer().getPeerId()))
+//        if (!peerExists(message.getPuncturePeer().getPeerId()))
             sendPuncture(message.getPuncturePeer());
     }
 
