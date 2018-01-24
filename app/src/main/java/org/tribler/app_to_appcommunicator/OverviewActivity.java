@@ -69,6 +69,7 @@ public class OverviewActivity extends AppCompatActivity {
     private int connectionType;
     private ByteBuffer outBuffer;
     private InetSocketAddress internalSourceAddress;
+    private InetSocketAddress externalSourceAddress;
 
     private Thread sendThread;
     private Thread listenThread;
@@ -249,7 +250,7 @@ public class OverviewActivity extends AppCompatActivity {
      * @throws IOException
      */
     private void sendPunctureRequest(Peer peer, Peer puncturePeer) throws IOException {
-        PunctureRequest request = new PunctureRequest(hashId, peer.getAddress(), internalSourceAddress, puncturePeer);
+        PunctureRequest request = new PunctureRequest(hashId, peer.getAddress(), externalSourceAddress, puncturePeer);
         sendMesssage(request, peer);
     }
 
@@ -260,7 +261,7 @@ public class OverviewActivity extends AppCompatActivity {
      * @throws IOException
      */
     private void sendPuncture(Peer peer) throws IOException {
-        Puncture puncture = new Puncture(hashId, peer.getAddress(), internalSourceAddress);
+        Puncture puncture = new Puncture(hashId, peer.getAddress(), externalSourceAddress);
         sendMesssage(puncture, peer);
     }
 
@@ -277,7 +278,7 @@ public class OverviewActivity extends AppCompatActivity {
             if (p.hasReceivedData() && p.getPeerId() != null && p.isAlive())
                 pexPeers.add(p);
         }
-        IntroductionResponse response = new IntroductionResponse(hashId, internalSourceAddress, peer
+        IntroductionResponse response = new IntroductionResponse(hashId, externalSourceAddress, peer
                 .getAddress(), invitee, connectionType, pexPeers, networkOperator);
         sendMesssage(response, peer);
     }
@@ -420,6 +421,7 @@ public class OverviewActivity extends AppCompatActivity {
             String id = message.getPeerId();
             if (wanVote.vote(message.getDestination())) {
                 System.out.println("Address changed to " + wanVote.getAddress());
+                externalSourceAddress = wanVote.getAddress();
                 showLocalIpAddress();
             }
             setWanvote(wanVote.getAddress().toString());
